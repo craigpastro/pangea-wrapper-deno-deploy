@@ -10,6 +10,11 @@ const ttl = new TTL();
 
 const router = new Router();
 
+router.get("/", (ctx) => {
+  ctx.response.body =
+    `Pangea's Embargo Service. Send a POST request to /embargo with JSON body {"countryCode": "<countryCode>"} to check that countries embargo status.`;
+});
+
 router.post("/embargo", checkEmbargoStatus);
 
 const app = new Application();
