@@ -56,7 +56,7 @@ async function checkEmbargoStatus(ctx: Context) {
   const jsonData = await resp.json();
   const result = jsonData.result;
   if (!result) {
-    console.log("error calling pangea", result);
+    console.log("error calling pangea:", jsonData);
     ctx.throw(500);
   }
 
