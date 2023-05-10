@@ -32,6 +32,9 @@ async function checkEmbargoStatus(ctx: Context) {
 
   const reqBody = await ctx.request.body().value;
   const countryCode = reqBody.countryCode;
+  if (!countryCode) {
+    ctx.throw(400);
+  }
 
   const cachedResult = ttl.get(countryCode);
   if (cachedResult) {
@@ -39,9 +42,9 @@ async function checkEmbargoStatus(ctx: Context) {
     return;
   }
 
-  const body = `{"iso_code": "${reqBody.countryCode}"}`;
+  const body = `{"iso_code": "${countryCode}"}`;
 
-  let resp = await fetch(`https://embargo.${pangeaDomain}/v1/iso/check`, {
+  const resp = await fetch(`https://embargo.${pangeaDomain}/v1/iso/check`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -53,10 +56,11 @@ async function checkEmbargoStatus(ctx: Context) {
   const jsonData = await resp.json();
   const result = jsonData.result;
   if (!result) {
+    console.log("error calling pangea", result);
     ctx.throw(500);
   }
 
   ttl.set(countryCode, result, 86400); // cache for one day
 
-  ctx.response.body = jsonData.result;
+  ctx.response.body = result;
 }
