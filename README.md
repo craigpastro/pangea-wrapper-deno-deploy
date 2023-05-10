@@ -7,7 +7,7 @@ Playing with [Deno Deploy](https://deno.com/deploy).
 Run the server with
 
 ```console
-deno run --allow-net server.ts
+make run
 ```
 
 and send a request with
