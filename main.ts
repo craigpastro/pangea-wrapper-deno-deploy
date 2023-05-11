@@ -4,7 +4,10 @@ import TTL from "https://deno.land/x/ttl/mod.ts";
 const pangeaDomain = Deno.env.get("PANGEA_DOMAIN");
 const pangeaToken = Deno.env.get("PANGEA_TOKEN");
 
+const denoRegion = Deno.env.get("DENO_REGION");
+
 const port = 8080;
+const responseTimeHeader = "Response-Time";
 
 const ttl = new TTL();
 
@@ -18,10 +21,28 @@ router.get("/", (ctx) => {
 router.post("/embargo", checkEmbargoStatus);
 
 const app = new Application();
+
+app.use(async (ctx, next) => {
+  await next();
+  const rt = ctx.response.headers.get(responseTimeHeader);
+  console.log(`${ctx.request.method} ${ctx.request.url} - ${rt}`);
+});
+
+app.use(async (ctx, next) => {
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  ctx.response.headers.set(responseTimeHeader, `${ms}ms`);
+});
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-console.log(`listening on http://localhost:${port}`);
+if (denoRegion) {
+  console.log(`🚀 serving request from ${denoRegion}`);
+} else {
+  console.log(`🚀 serving request on localhost:${port}`);
+}
 
 await app.listen({ port });
 
