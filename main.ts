@@ -1,4 +1,4 @@
-import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
+import { Application, Router } from "https://deno.land/x/oak/mod.ts";
 import * as h from "./handlers.ts";
 import { registerMiddleware } from "./middleware.ts";
 
@@ -9,7 +9,7 @@ const port = 8080;
 const router = new Router();
 
 router.get("/", h.frontend);
-router.post("/embargo", h.checkEmbargoStatus);
+router.get("/embargo", h.checkEmbargoStatus);
 
 const app = new Application();
 
