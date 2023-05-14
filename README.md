@@ -1,4 +1,4 @@
-# pangea-embargo-deno-deploy
+# pangea-wrapper-deno-deploy
 
 Playing with [Deno Deploy](https://deno.com/deploy).
 
@@ -10,4 +10,4 @@ Run the server with `make run` and visit http://localhost:8080.
 
 ### From Deno Deploy
 
-Visit https://pangea-embargo.deno.dev.
+Visit https://pangea-wrapper.deno.dev.
