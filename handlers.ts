@@ -17,7 +17,8 @@ export async function checkEmbargoStatus(ctx: Context) {
     ctx.throw(400, "please set the countryCode query parameter");
   }
 
-  const cachedResult = ttl.get(countryCode);
+  const cacheKey = `embargo-${countryCode}`;
+  const cachedResult = ttl.get(cacheKey);
   if (cachedResult) {
     ctx.response.body = cachedResult;
     return;
@@ -40,7 +41,43 @@ export async function checkEmbargoStatus(ctx: Context) {
     ctx.throw(500, "error calling pangea");
   }
 
-  ttl.set(countryCode, result, 86400); // cache for one day
+  ttl.set(cacheKey, result, 86400); // cache for one day
 
   ctx.response.body = result;
+}
+
+export async function checkVpnStatus(ctx: Context) {
+  let ip = ctx.request.url.searchParams.get("ip");
+  if (!ip) {
+    ip = ctx.request.ip;
+  }
+
+  const cacheKey = `is-vpn-${ip}`;
+  const cachedResult = ttl.get(cacheKey);
+  if (cachedResult) {
+    ctx.response.body = cachedResult;
+    return;
+  }
+
+  const body = `{"provider":"digitalelement", "ip":"${ip}"}`;
+  const resp = await fetch(`https://ip-intel.${pangeaDomain}/v1/vpn`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${pangeaToken}`,
+    },
+    body,
+  });
+
+  const jsonData = await resp.json();
+  const result = jsonData.result;
+  if (!result) {
+    console.log("error calling pangea:", jsonData);
+    ctx.throw(500, "error calling pangea");
+  }
+
+  const respBody = { ip, isVpn: result.data.is_vpn };
+  ttl.set(cacheKey, respBody, 43200); // cache for half a day
+
+  ctx.response.body = respBody;
 }

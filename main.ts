@@ -10,6 +10,7 @@ const router = new Router();
 
 router.get("/", h.frontend);
 router.get("/embargo", h.checkEmbargoStatus);
+router.get("/is-vpn", h.checkVpnStatus);
 
 const app = new Application();
 
