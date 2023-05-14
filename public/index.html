@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pangea Wrapper</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cardo&display=swap');
+
+        body {
+            font-family: 'Cardo', serif;
+        }
+
+        a {
+            color: blue;
+            text-decoration: none;
+            text-underline-position: under;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pangea Wrapper</h1>
+
+    A wrapper for some of Pangea's services. Try:
+
+    <ul>
+        <li><a href="/embargo?countryCode=CD">/embargo?countryCode=CD</a> to check the Democratic Republic of the
+            Congo's embargo status, or try a different country code.
+        </li>
+        <li><a href="/isVpn?ip=2.56.189.74">/isVpn?ip=2.56.189.74</a> to check whether 2.56.189.74 originates from a
+            VPN, or try a different IPv4 address. No query parameter should check your IP. Note that it only works for
+            IPv4 addresses.
+        </li>
+    </ul>
+
+    See <a href="https://pangea.cloud">pangea.cloud</a> for more information.
+</body>
+
+</html>

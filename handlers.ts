@@ -1,4 +1,4 @@
-import { Context } from "https://deno.land/x/oak/mod.ts";
+import { Context, send } from "https://deno.land/x/oak/mod.ts";
 import TTL from "https://deno.land/x/ttl/mod.ts";
 import { isIPv4 } from "https://raw.githubusercontent.com/ako-deno/isIP/master/mod.ts";
 
@@ -7,12 +7,11 @@ const ttl = new TTL();
 const pangeaDomain = Deno.env.get("PANGEA_DOMAIN");
 const pangeaToken = Deno.env.get("PANGEA_TOKEN");
 
-export function frontend(ctx: Context) {
-  ctx.response.body = `A wrapper for Pangea's Embargo Service. Try:
-    - /embargo?countryCode=<countryCode> to check that countries embargo status.
-    - /is-vpn?ip=<ip> to check whether a given ip originates from a VPN. No query parameter should check your ip.
-    
-See https://pangea.cloud for more information.`;
+export async function servePublic(ctx: Context) {
+  await send(ctx, ctx.request.url.pathname, {
+    root: "./public",
+    index: "index.html",
+  });
 }
 
 export async function checkEmbargoStatus(ctx: Context) {
@@ -57,10 +56,10 @@ export async function checkVpnStatus(ctx: Context) {
   }
 
   if (!isIPv4(ip)) {
-    ctx.throw(400, `is-vpn only works with IPv4 addresses: ip=${ip}`);
+    ctx.throw(400, `isVpn only works with IPv4 addresses: ip=${ip}`);
   }
 
-  const cacheKey = `is-vpn-${ip}`;
+  const cacheKey = `isVpn-${ip}`;
   const cachedResult = ttl.get(cacheKey);
   if (cachedResult) {
     ctx.response.body = cachedResult;

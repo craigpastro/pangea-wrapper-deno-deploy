@@ -8,9 +8,9 @@ const port = 8080;
 
 const router = new Router();
 
-router.get("/", h.frontend);
+router.get("/", h.servePublic);
 router.get("/embargo", h.checkEmbargoStatus);
-router.get("/is-vpn", h.checkVpnStatus);
+router.get("/isVpn", h.checkVpnStatus);
 
 const app = new Application();
 
