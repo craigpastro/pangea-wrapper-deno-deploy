@@ -7,8 +7,11 @@ const pangeaDomain = Deno.env.get("PANGEA_DOMAIN");
 const pangeaToken = Deno.env.get("PANGEA_TOKEN");
 
 export function frontend(ctx: Context) {
-  ctx.response.body =
-    `A wrapper for Pangea's Embargo Service. Try /embargo?countryCode=<countryCode>"} to check that countries embargo status.`;
+  ctx.response.body = `A wrapper for Pangea's Embargo Service. Try:
+    - /embargo?countryCode=<countryCode> to check that countries embargo status.
+    - /is-vpn?ip=<ip> to check whether a given ip originates from a VPN. No query parameter should check your ip.
+    
+See https://pangea.cloud for more information.`;
 }
 
 export async function checkEmbargoStatus(ctx: Context) {
