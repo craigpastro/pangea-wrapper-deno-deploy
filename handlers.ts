@@ -1,5 +1,6 @@
 import { Context } from "https://deno.land/x/oak/mod.ts";
 import TTL from "https://deno.land/x/ttl/mod.ts";
+import { isIPv4 } from "https://raw.githubusercontent.com/ako-deno/isIP/master/mod.ts";
 
 const ttl = new TTL();
 
@@ -53,6 +54,10 @@ export async function checkVpnStatus(ctx: Context) {
   let ip = ctx.request.url.searchParams.get("ip");
   if (!ip) {
     ip = ctx.request.ip;
+  }
+
+  if (!isIPv4(ip)) {
+    ctx.throw(400, `is-vpn only works with IPv4 addresses: ip=${ip}`);
   }
 
   const cacheKey = `is-vpn-${ip}`;
